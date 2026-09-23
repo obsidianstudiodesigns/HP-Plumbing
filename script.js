@@ -60,6 +60,49 @@
     hero.addEventListener('pointerleave', function () { tilt.style.transform = ''; });
   }
 
+  // Hero film: loads after the page, skipped for reduced motion or data saver,
+  // pauses off-screen, and has a visible pause control (WCAG 2.2.2)
+  var video = document.querySelector('.hero-video');
+  var vBtn = document.getElementById('videoToggle');
+  var saveData = navigator.connection && navigator.connection.saveData;
+  if (video && vBtn && !reduce && !saveData) {
+    var userPaused = false;
+    video.src = window.matchMedia('(max-width: 800px)').matches ? 'assets/video/hero-720.mp4' : 'assets/video/hero-1080.mp4';
+    video.addEventListener('playing', function () { video.classList.add('on'); }, { once: true });
+    var tryPlay = function () { var p = video.play(); if (p && p.catch) p.catch(function () {}); };
+    tryPlay();
+    vBtn.hidden = false;
+    vBtn.addEventListener('click', function () {
+      userPaused = !video.paused ? true : false;
+      if (userPaused) video.pause(); else tryPlay();
+      vBtn.setAttribute('aria-pressed', String(userPaused));
+      vBtn.setAttribute('aria-label', userPaused ? 'Play background video' : 'Pause background video');
+    });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (e) {
+        if (userPaused) return;
+        if (e[0].isIntersecting) tryPlay(); else video.pause();
+      }).observe(document.querySelector('.hero'));
+    }
+  }
+
+  // Theme toggle: follows the OS until the visitor picks, then remembers the choice
+  var root = document.documentElement;
+  var themeBtn = document.getElementById('themeToggle');
+  var osDark = window.matchMedia('(prefers-color-scheme: dark)');
+  function current() { return root.getAttribute('data-theme') || (osDark.matches ? 'dark' : 'light'); }
+  function label() { themeBtn.setAttribute('aria-label', current() === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'); }
+  if (themeBtn) {
+    label();
+    themeBtn.addEventListener('click', function () {
+      var next = current() === 'dark' ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('hp-theme', next); } catch (e) {}
+      label();
+    });
+    osDark.addEventListener && osDark.addEventListener('change', label);
+  }
+
   // Pause control for the suburb marquee (WCAG 2.2.2)
   var toggle = document.getElementById('marqueeToggle');
   var marquee = document.getElementById('areaMarquee');
