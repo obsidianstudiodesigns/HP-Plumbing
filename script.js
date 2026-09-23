@@ -60,6 +60,18 @@
     hero.addEventListener('pointerleave', function () { tilt.style.transform = ''; });
   }
 
+  // Pause control for the suburb marquee (WCAG 2.2.2)
+  var toggle = document.getElementById('marqueeToggle');
+  var marquee = document.getElementById('areaMarquee');
+  if (toggle && marquee) {
+    toggle.addEventListener('click', function () {
+      var paused = toggle.getAttribute('aria-pressed') !== 'true';
+      toggle.setAttribute('aria-pressed', String(paused));
+      toggle.querySelector('span').textContent = paused ? 'Play' : 'Pause';
+      marquee.classList.toggle('paused', paused);
+    });
+  }
+
   // Quote form opens WhatsApp with details filled in
   var form = document.getElementById('quoteForm');
   var error = document.getElementById('formError');
