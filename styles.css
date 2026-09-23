@@ -100,6 +100,14 @@ main:focus { outline: none; }
 .hero-badge { width: 170px; perspective: 800px; }
 .hero-badge img { width: 100%; filter: drop-shadow(0 30px 40px rgba(0,0,0,.6)); transition: transform .6s var(--ease); transform-style: preserve-3d; }
 
+/* Hero depth: photo drifts slower than the page as you scroll past */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-media { animation: hero-drift linear both; animation-timeline: scroll(root); animation-range: 0 100vh; }
+    @keyframes hero-drift { to { transform: translateY(22%); } }
+  }
+}
+
 /* Load-in */
 /* Hero copy is visible from the first paint; only position eases in */
 .load { animation: rise .9s var(--ease) both; animation-delay: calc(var(--d) * 70ms); }
@@ -109,14 +117,10 @@ main:focus { outline: none; }
   @keyframes settle { from { transform: scale(1.08); } to { transform: scale(1); } }
 }
 
-/* Promises */
+/* Promise statement: one sentence, not three equal columns */
 .promises { border-block: 1px solid var(--line); background: var(--bg-2); }
-.promises-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
-.promise { display: flex; align-items: center; gap: 16px; padding: 28px 28px; }
-.promise + .promise { border-left: 1px solid var(--line); }
-.promise .i { font-size: 28px; color: var(--accent-hi); }
-.promise b { display: block; font-weight: 600; font-size: 16px; }
-.promise span { color: var(--text-3); font-size: 14px; }
+.statement { padding: 56px 0; max-width: 40ch; font-size: clamp(22px, 2.5vw, 34px); line-height: 1.32; font-weight: 500; letter-spacing: -.015em; color: var(--text-3); }
+.statement strong { color: var(--text); font-weight: 650; }
 
 /* Sections */
 .section { padding: 128px 0; }
@@ -151,10 +155,11 @@ main:focus { outline: none; }
 .why-photo { margin: 0; border-radius: var(--r-tile); overflow: hidden; box-shadow: var(--shadow); aspect-ratio: 4 / 5; }
 .why-photo img { width: 100%; height: 100%; object-fit: cover; }
 .lead { margin-top: 20px; font-size: 18px; color: var(--text-2); max-width: 48ch; }
-.points { display: grid; grid-template-columns: 1fr 1fr; gap: 36px 40px; margin-top: 48px; }
-.point .i { font-size: 26px; color: var(--accent-hi); }
-.point h3 { font-size: 18px; margin-top: 14px; letter-spacing: -.01em; }
-.point p { color: var(--text-3); font-size: 15px; margin-top: 6px; }
+.assurances { list-style: none; margin: 44px 0 0; padding: 0; }
+.assurances li { display: grid; grid-template-columns: minmax(180px, 2fr) 3fr; gap: 24px; align-items: baseline; padding: 22px 0; border-bottom: 1px solid var(--line); }
+.assurances li:first-child { border-top: 1px solid var(--line); }
+.assurances h3 { font-size: 19px; letter-spacing: -.01em; }
+.assurances p { color: var(--text-2); font-size: 16px; }
 
 /* Timeline */
 .timeline { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; position: relative; }
@@ -306,9 +311,7 @@ main:focus { outline: none; }
   .hero-cta { flex-direction: column; }
   .hero-cta .btn { width: 100%; white-space: normal; }
   .area .wrap { flex-direction: column; align-items: flex-start; }
-  .promises-grid { grid-template-columns: 1fr; }
-  .promise { padding: 18px 0; }
-  .promise + .promise { border-left: 0; border-top: 1px solid var(--line); }
+  .statement { padding: 40px 0; }
   .section { padding: 72px 0; }
   .head { margin-bottom: 36px; }
   .head p { font-size: 16px; }
@@ -322,7 +325,8 @@ main:focus { outline: none; }
   .tile-icon { margin: 20px 20px 0; }
   .why-grid { grid-template-columns: 1fr; gap: 40px; }
   .why-photo { aspect-ratio: 4 / 3; }
-  .points { grid-template-columns: 1fr; gap: 28px; margin-top: 36px; }
+  .assurances { margin-top: 32px; }
+  .assurances li { grid-template-columns: 1fr; gap: 4px; padding: 18px 0; }
   .timeline { grid-template-columns: 1fr; row-gap: 0; }
   .timeline li { display: grid; grid-template-columns: 56px 1fr; column-gap: 18px; padding-bottom: 32px; }
   .timeline li:not(:last-child)::before { content: ""; position: absolute; left: 27px; top: 56px; bottom: 0; width: 1px; background: var(--line-2); }
